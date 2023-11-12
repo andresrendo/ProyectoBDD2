@@ -20,3 +20,4 @@ for product in product_List:
     Product: {product_name.text}
     Price: {product_price.text}
     ''')
+    print("hola funciono")
