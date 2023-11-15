@@ -4,7 +4,6 @@ import sys
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import functions as f
-import time
 
 # URI connection to MongoDB Atlas
 uri = "mongodb+srv://juanraque:Jc30213659@cluster0.rnw7ssa.mongodb.net/?retryWrites=true&w=majority"
@@ -13,6 +12,7 @@ uri = "mongodb+srv://juanraque:Jc30213659@cluster0.rnw7ssa.mongodb.net/?retryWri
 client = MongoClient(uri, server_api=ServerApi('1'))
 
 url = "https://celulares.mercadolibre.com.ve/_NoIndex_True"
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'}
 
 
 sys.stdout.reconfigure(encoding='utf-8')
@@ -23,18 +23,22 @@ while True:
     soup = BeautifulSoup(req.text, "html.parser")
     product_List = soup.find_all("div", class_="ui-search-result__content-wrapper")
 
+    siguiente_enlace = soup.select(".andes-pagination__button--next a")
 
     for product in product_List:
 
-        product_link = product.find("a", class_="ui-search-item__group__element").get("href")       
-    
+        product_link = product.find("a", class_="ui-search-item__group__element").get("href")
+        
         req = requests.get(product_link)
         soup = BeautifulSoup(req.text, "html.parser")
 
         product_name = soup.find("h1", class_="ui-pdp-title").text
         product_price = float(soup.find("meta", itemprop="price").get("content"))          
-        product_location = soup.find("p", class_="ui-pdp-media__text").text 
+        product_location = f.get_location(soup)
         product_brand = f.get_brand(soup)
+        product_linea = f.get_linea(soup)
+        product_model = f.get_model(soup)
+
         
         # Insert data into MongoDB Atlas
         #client.get_database("test").get_collection("test").insert_one({
@@ -47,12 +51,15 @@ while True:
         Nombre: {product_name}
         Precio: {product_price}
         Ubicacion: {product_location}
-        Marca: {product_brand}""")
-
-    siguiente_enlace = soup.select(".andes-pagination__button--next a")
+        Marca: {product_brand}
+        Linea: {product_linea}
+        Modelo: {product_model}""")
+    
 
     if siguiente_enlace:
-        siguiente_enlace = siguiente_enlace[0]["href"]
+        siguiente_enlace = siguiente_enlace[0].get("href")
         url = siguiente_enlace
     else:
         break
+
+print("fin del programa")
