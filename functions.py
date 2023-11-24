@@ -18,7 +18,7 @@ def get_brand(soup):
         for x in product_brand:
             if x.text == "Marca":
                 product_brand = x.find_next_sibling("td").text
-                break
+                return product_brand
         product_brand = ""
     return product_brand
 
