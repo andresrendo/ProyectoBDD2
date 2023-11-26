@@ -1,6 +1,11 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 
 def get_location(soup):
-    
+
     location = soup.find_all("p", class_="ui-pdp-color--GRAY ui-pdp-family--REGULAR ui-pdp-media__text")
     for x in location:
         if x.text != "":
@@ -10,15 +15,19 @@ def get_location(soup):
 
 
 def get_brand(soup):
+   
+    #elements = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "andes-table__header")))    
 
+    #soup = BeautifulSoup(html, "html.parser")
     product_brand = soup.find_all("th", class_="andes-table__header")
+
     if len(product_brand) == 0:
         product_brand = ""
     else:
         for x in product_brand:
             if x.text == "Marca":
                 product_brand = x.find_next_sibling("td").text
-                break
+                return product_brand            
         product_brand = ""
     return product_brand
 
