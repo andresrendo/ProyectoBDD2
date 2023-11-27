@@ -12,17 +12,111 @@ def get_location(soup):
 
 
 def get_brand(soup):
-    product_brand = soup.find_all("th", class_="andes-table__header")
+    marcas_telefonos = [
+    "Samsung",
+    "Xiaomi",
+    "Apple",
+    "Huawei",
+    "Iphone",
+    "Redmi",
+    "iPhone",
+    "Técno",
+    "Tecno",
+    "Infinix",
+    "Techo",
+    "Hk8",
+    "Umidigi",
+    "Logic",
+    "BLU",
+    "Motorola",
+    "Infinix",
+    "Panita",
+    "Alcatel",
+    "Android",
+    "Honor",
+    "Huawei",
+    "LG",
+    "Sony",
+    "BLU",
+    "Galaxy",
+    "Hyundai",
+    "HTC"   ,   
+    "Haier",
+    "Movistar",
+    "Microsoft",
+    "Nexus",
+    "Otros",
+    "Phillips",
+    "Razer",
+    "Siragon",
+    "Sky",
+    "Skyworth",
+    "Toshiba",
+    "Vtelca",
+    "Zonda",
+    "ZTE",
+    "Acer",
+    "Ainol",
+    "Airis",
+    "Sansung",
+    "AOC",
+    "TCL",
+    "T-Mobile",
+    "Vivo",
+    "Yezz",
+    "Yoobao",
+    "Uniwa"
+    "Nokia",
+    "Oppo",
+    "Asus",
+    "Lenovo",
+    "ZTE",
+    "HTC",
+    "Honor",
+    "Meizu",
+    "Google",
+    "OnePlus",
+    "Realme",
+    "Vivo",
+    "BlackBerry",
+    "Cat",
+    "Doogee",
+    "Gigabyte",
+    "Hisense",
+    "JBL",
+    "LeEco",
+    "Panasonic",
+    "Philips",
+    "Razer",
+    "Sharp",
+    "TCL",
+    "Vodafone",
+    "Wiko",
+    "Xolo",
+    "Yota",
+    "Zopo"
+]
+    nombre = soup.find("h1", class_="ui-pdp-title").text
+    nombre = nombre.split()
+    for x in nombre:
+        if x in marcas_telefonos:
+            if x == "iPhone":
+                return "Apple"
+            elif x == "Iphone":
+                return "Apple"
+            elif x == "Galaxy":
+                return "Samsung"
+            elif x == "Sansung":
+                return "Samsung"
+            elif x == "Técno":
+                return "Tecno"
+            elif x == "Redmi":
+                return "Xiaomi"
+            else:
+                return x
+                
+    return "Otros"
 
-    if len(product_brand) == 0:
-        product_brand = ""
-    else:
-        for x in product_brand:
-            if x.text == "Marca":
-                product_brand = x.find_next_sibling("td").text
-                return product_brand
-        product_brand = ""
-    return product_brand
 
 def get_linea(soup):
     
