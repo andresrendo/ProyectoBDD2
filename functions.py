@@ -4,11 +4,14 @@
 def get_location(soup):
     
     location = soup.find_all("p", class_="ui-pdp-color--GRAY ui-pdp-family--REGULAR ui-pdp-media__text")
+
+    if len(location) == 0:
+        return "No disponible"
+    
     for x in location:
         if x.text != "":
             location = x.text
-            break
-    return location
+            return location
 
 
 def get_brand(soup):
@@ -148,40 +151,66 @@ def get_model(soup):
 def get_ventas(soup):
         a = 0
         ventas = soup.find_all("strong", class_="ui-pdp-seller__sales-description")
+        num_ventas = None
         for x in ventas:
             a += 1
             if a == 3:
-                ventas = x.text
-                return ventas
+                num_ventas = int(x.text)
+                break
+
+        if num_ventas == None or len(ventas) == 0:
+            num_ventas = "No disponible"
+        return num_ventas
 
 def get_recomendacion(soup):
     a = 0
-    recomendacion = soup.find_all("strong", class_="ui-pdp-seller__sales-description")
-    for x in recomendacion:
+    recomendacion_arr = soup.find_all("strong", class_="ui-pdp-seller__sales-description")
+    recomendacion = None
+    for x in recomendacion_arr:
         a += 1
         if a == 1:
-            recomendacion = x.text
-            return recomendacion
+            recomendacion = int(x.text.replace("%", ""))
+            break
+
+    if recomendacion == None or len(recomendacion_arr) == 0:
+        recomendacion = "No disponible"
+    return recomendacion
         
 def get_aniosExp(soup):
     a = 0
-    aniosExp = soup.find_all("strong", class_="ui-pdp-seller__sales-description")
-    for x in aniosExp:
+    aniosExp_arr = soup.find_all("strong", class_="ui-pdp-seller__sales-description")
+    aniosExp = None
+    for x in aniosExp_arr:
         a += 1
         if a == 2:
-            aniosExp = x.text
-            return aniosExp
+            aniosExp = x.text.split()
+            if aniosExp[1] == "meses" or aniosExp[1] == "mes":
+                aniosExp = int(aniosExp[0])/12
+                aniosExp = round(aniosExp, 1)
+            else:
+                aniosExp = float(aniosExp[0])
+            break
+    
+    if aniosExp == None or len(aniosExp_arr) == 0:
+        aniosExp = "No disponible"
+    return aniosExp
         
 def get_vendidos(soup):
-    estadisticas = soup.find_all("span", class_="ui-pdp-subtitle")
-    for x in estadisticas:
+    estadisticas_arr = soup.find_all("span", class_="ui-pdp-subtitle")
+    cantidad_vendidos = None
+    for x in estadisticas_arr:
         if x.text != "":
             estadisticas = x.text
             cantidad_vendidos= ""
             for letra in estadisticas:
                 if letra == "|":
-                    cantidad_vendidos = estadisticas.split("|")[1]
-            return cantidad_vendidos
+                    cantidad_vendidos = int(estadisticas.split("|")[1].strip().split()[0])
+                    break
+
+    if cantidad_vendidos == None or len(estadisticas_arr) == 0:
+        cantidad_vendidos = "No disponible"
+    
+    return cantidad_vendidos
         
 def get_estado(soup):
     estado = soup.find_all("span", class_="ui-pdp-subtitle")
@@ -191,7 +220,7 @@ def get_estado(soup):
             for letra in estado:
                 if letra == "|":
                     estado = estado.split("|")[0]
-                    return estado
+                    return estado.strip()
 
 def get_vendedor(soup):
     vendedor = soup.find_all("span", class_="ui-pdp-color--BLUE ui-pdp-family--REGULAR")
